@@ -1,0 +1,292 @@
+/* General body and headings styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+/* Container for teams */
+#teams-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Styling for each team card */
+.team {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 10px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for each player item */
+.player {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.player img {
+    border-radius: 50%;
+    margin-right: 15px;
+    width: 50px;
+    height: 50px;
+}
+
+.player p {
+    margin: 0;
+}
+
+/* Styling for unordered lists */
+ul.player-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul.player-list li {
+    background-color: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 10px 0;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+ul.player-list li img {
+    border-radius: 50%;
+    margin-right: 15px;
+    width: 50px;
+    height: 50px;
+}
+
+ul.player-list li div {
+    flex: 1;
+}
+
+ul.player-list li p {
+    margin: 0;
+}
+
+/* Add hover effect for list items */
+ul.player-list li:hover {
+    background-color: #e0f7fa;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+/* General body and headings styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+#teams-list, #team-details {
+    padding: 20px;
+    text-align: center;
+}
+
+.team-item {
+    cursor: pointer;
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    display: inline-block;
+    width: 200px;
+    background-color: #fff;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-item:hover {
+    background-color: #e0f7fa;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Styling for unordered lists */
+ul.player-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+ul.player-list li {
+    background-color: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 10px 0;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+ul.player-list li:hover {
+    background-color: #e0f7fa;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+ul.player-list li img {
+    border-radius: 50%;
+    margin-right: 15px;
+    width: 50px;
+    height: 50px;
+}
+
+ul.player-list li div {
+    flex: 1;
+}
+
+ul.player-list li p {
+    margin: 0;
+}
+
+#back-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#back-button:hover {
+    background-color: #0056b3;
+}
+
+
+
+
+/* General body and headings styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#player-image {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    margin: 10px 0 5px 0;
+}
+
+input[type="text"] {
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.stars {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.star {
+    font-size: 24px;
+    cursor: pointer;
+    color: #ddd;
+    transition: color 0.3s ease;
+}
+
+.star:hover,
+.star.selected {
+    color: #ffd700;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#rating-summary {
+    margin-top: 20px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    background-color: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 10px 0;
+    padding: 10px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+ul li:hover {
+    background-color: #e0f7fa;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+a.nostyle:link {
+    text-decoration: inherit;
+    color: inherit;
+    cursor: auto;
+}
+
+a.nostyle:visited {
+    text-decoration: inherit;
+    color: inherit;
+    cursor: auto;
+}

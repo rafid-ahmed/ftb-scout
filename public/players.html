@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1 id="player-name"></h1>
+    <img id="player-image" src="" alt="Player Image">
+    <form id="comment-rating-form">
+      <label for="comment">Comment:</label>
+      <input type="text" id="comment" name="comment">
+      <label for="skill">Skill:</label>
+      <div class="stars" id="skill-stars">
+        <span class="star" data-value="1">&#9733;</span>
+        <span class="star" data-value="2">&#9733;</span>
+        <span class="star" data-value="3">&#9733;</span>
+        <span class="star" data-value="4">&#9733;</span>
+        <span class="star" data-value="5">&#9733;</span>
+      </div>
+      <label for="stamina">Stamina:</label>
+      <div class="stars" id="stamina-stars">
+        <span class="star" data-value="1">&#9733;</span>
+        <span class="star" data-value="2">&#9733;</span>
+        <span class="star" data-value="3">&#9733;</span>
+        <span class="star" data-value="4">&#9733;</span>
+        <span class="star" data-value="5">&#9733;</span>
+      </div>
+      <label for="pace">Pace:</label>
+      <div class="stars" id="pace-stars">
+        <span class="star" data-value="1">&#9733;</span>
+        <span class="star" data-value="2">&#9733;</span>
+        <span class="star" data-value="3">&#9733;</span>
+        <span class="star" data-value="4">&#9733;</span>
+        <span class="star" data-value="5">&#9733;</span>
+      </div>
+      <label for="physical">Physical:</label>
+      <div class="stars" id="physical-stars">
+        <span class="star" data-value="1">&#9733;</span>
+        <span class="star" data-value="2">&#9733;</span>
+        <span class="star" data-value="3">&#9733;</span>
+        <span class="star" data-value="4">&#9733;</span>
+        <span class="star" data-value="5">&#9733;</span>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+    <div id="rating-summary"></div>
+    <ul id="comments"></ul>
+  </div>
+  <script src="scripts.js"></script>
+</body>
+</html>
