@@ -2,7 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const app = express();
-const port = 3000;
+const ngrok = require('ngrok');
+
+// Your existing code to start the server
+const PORT = process.env.PORT || 3000;
+const NGROK_AUTHTOKEN = process.env.NGROK_AUTHTOKEN || "2h76Phl8GcV7mW7WtADQUG56Q7j_6sHZZeNrRraHhP14Yi9wy"; // Replace with your authtoken or set as an environment variable
 
 app.use(express.json());
 // app.use(express.static(path.join(__dirname, 'public')));
@@ -139,6 +143,24 @@ app.post('/api/teams/:teamName/players/:playerId', async (req, res) => {
     }
   });  
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+// app.listen(port, () => {
+//   console.log(`Server running at http://localhost:${port}`);
+// });
+
+app.listen(PORT, async () => {
+  console.log(`Server is running on port ${PORT}`);
+  
+  try {
+    // Start ngrok with authtoken and get the URL
+    await ngrok.authtoken(NGROK_AUTHTOKEN);
+    const url = await ngrok.connect({
+      addr: PORT,
+      region: 'eu', // specify your region
+      onStatusChange: status => console.log(`Ngrok status: ${status}`), // logs status changes
+      onLogEvent: log => console.log(`Ngrok log: ${log}`) // logs Ngrok events
+    });
+    console.log(`Ngrok tunnel opened at: ${url}`);
+  } catch (error) {
+    console.error('Error starting ngrok:', error);
+  }
 });
