@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${teamData.players.map(player => `
                         <a class="nostyle" href="players.html?team=${teamData.name}&player=${player.id}">
                             <li>
-                                <img src="/photos/${player.photo}" alt="${player.name}">
+                                <img src="${player.photo}" alt="${player.name}">
                                 <div>
                                     <p><strong>${player.name}</strong></p>
                                     <p>Skill: ${player.ratings.skill}</p>

@@ -1,24 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
-const multer = require('multer');
 const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/photos', express.static(path.join(__dirname, 'public', 'photos')));
+// app.use(express.static(path.join(__dirname, 'public')));
+// app.use('/public/photos', express.static(path.join(__dirname, 'public', 'photos')));
 
-// Set up multer for photo uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/photos');
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-const upload = multer({ storage });
+app.use(express.static('public'));
+
+// Serve static files for player images
+app.use('/photos', express.static(path.join(__dirname, 'public', 'photos')));
 
 // MongoDB connection
 mongoose.connect('mongodb://mongo:27017/sports-teams', { useNewUrlParser: true, useUnifiedTopology: true });
@@ -72,7 +65,7 @@ async function initializeTeams() {
     var j = 0;
     teams.forEach(team => {
       for (let i = 1; i <= 12; i++) {
-        team.players.push({ id: i, name: array[j++], photo: `photos/player${i}.jpg`, comments: [] });
+        team.players.push({ id: i, name: array[j++], photo: '/photos/Person.jpeg', comments: [] });
       }
     });
 
@@ -145,11 +138,6 @@ app.post('/api/teams/:teamName/players/:playerId', async (req, res) => {
       res.status(404).send('Team not found');
     }
   });  
-
-// API to upload player photo
-app.post('/api/upload', upload.single('photo'), (req, res) => {
-  res.json({ filePath: `photos/${req.file.filename}` });
-});
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

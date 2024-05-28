@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('player-name').textContent = player.name;
   
       // Update player image
-      document.getElementById('player-image').src = player.image;
+      document.getElementById('player-image').src = player.photo;
     } catch (error) {
       console.error('Error fetching player information:', error);
     }
