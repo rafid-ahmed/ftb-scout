@@ -17,6 +17,12 @@ app.use(express.static('public'));
 // Serve static files for player images
 app.use('/photos', express.static(path.join(__dirname, 'public', 'photos')));
 
+// Middleware to set the ngrok-skip-browser-warning header
+// app.use((req, res, next) => {
+//   res.setHeader('ngrok-skip-browser-warning', 'true');
+//   next();
+// });
+
 // MongoDB connection
 mongoose.connect('mongodb://mongo:27017/sports-teams', { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -29,19 +35,25 @@ const playerSchema = new mongoose.Schema({
       skill: { type: Number, default: 0 },
       stamina: { type: Number, default: 0 },
       pace: { type: Number, default: 0 },
-      physical: { type: Number, default: 0 },
+      passing: { type: Number, default: 0 },
+      shooting: { type: Number, default: 0 },
+      defending: { type: Number, default: 0 },
     },
     totalRatings: {
       skill: { type: Number, default: 0 },
       stamina: { type: Number, default: 0 },
       pace: { type: Number, default: 0 },
-      physical: { type: Number, default: 0 },
+      passing: { type: Number, default: 0 },
+      shooting: { type: Number, default: 0 },
+      defending: { type: Number, default: 0 },
     },
     ratingCounts: {
       skill: { type: Number, default: 0 },
       stamina: { type: Number, default: 0 },
       pace: { type: Number, default: 0 },
-      physical: { type: Number, default: 0 },
+      passing: { type: Number, default: 0 },
+      shooting: { type: Number, default: 0 },
+      defending: { type: Number, default: 0 },
     },
   });
   
@@ -125,7 +137,7 @@ app.post('/api/teams/:teamName/players/:playerId', async (req, res) => {
           player.comments.push(comment);
         }
         if (ratings) {
-          for (let key of ['skill', 'stamina', 'pace', 'physical']) {
+          for (let key of ['skill', 'stamina', 'pace', 'passing', 'shooting', 'defending']) {
             if (ratings[key] !== undefined) {
               player.totalRatings[key] += ratings[key];
               player.ratingCounts[key] += 1;
@@ -143,24 +155,24 @@ app.post('/api/teams/:teamName/players/:playerId', async (req, res) => {
     }
   });  
 
-// app.listen(port, () => {
-//   console.log(`Server running at http://localhost:${port}`);
-// });
-
-app.listen(PORT, async () => {
-  console.log(`Server is running on port ${PORT}`);
-  
-  try {
-    // Start ngrok with authtoken and get the URL
-    await ngrok.authtoken(NGROK_AUTHTOKEN);
-    const url = await ngrok.connect({
-      addr: PORT,
-      region: 'eu', // specify your region
-      onStatusChange: status => console.log(`Ngrok status: ${status}`), // logs status changes
-      onLogEvent: log => console.log(`Ngrok log: ${log}`) // logs Ngrok events
-    });
-    console.log(`Ngrok tunnel opened at: ${url}`);
-  } catch (error) {
-    console.error('Error starting ngrok:', error);
-  }
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
 });
+
+// app.listen(PORT, async () => {
+//   console.log(`Server is running on port ${PORT}`);
+  
+//   try {
+//     // Start ngrok with authtoken and get the URL
+//     await ngrok.authtoken(NGROK_AUTHTOKEN);
+//     const url = await ngrok.connect({
+//       addr: PORT,
+//       region: 'eu', // specify your region
+//       onStatusChange: status => console.log(`Ngrok status: ${status}`), // logs status changes
+//       onLogEvent: log => console.log(`Ngrok log: ${log}`) // logs Ngrok events
+//     });
+//     console.log(`Ngrok tunnel opened at: ${url}`);
+//   } catch (error) {
+//     console.error('Error starting ngrok:', error);
+//   }
+// });

@@ -34,12 +34,22 @@ document.addEventListener('DOMContentLoaded', () => {
                         <a class="nostyle" href="players.html?team=${teamData.name}&player=${player.id}">
                             <li>
                                 <img src="${player.photo}" alt="${player.name}">
-                                <div>
-                                    <p><strong>${player.name}</strong></p>
-                                    <p>Skill: ${player.ratings.skill}</p>
-                                    <p>Stamina: ${player.ratings.stamina}</p>
-                                    <p>Pace: ${player.ratings.pace}</p>
-                                    <p>Physical: ${player.ratings.physical}</p>
+                                <p><strong>${player.name}</strong></p>
+                                <div class="float-container">
+                                    <div class="float-child">
+                                        <div>
+                                            <p>Skill: ${player.ratings.skill.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                                            <p>Stamina: ${player.ratings.stamina.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                                            <p>Pace: ${player.ratings.pace.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="float-child">
+                                        <div>
+                                            <p>Passing: ${player.ratings.passing.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                                            <p>Shooting: ${player.ratings.shooting.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                                            <p>Defending: ${player.ratings.defending.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </li>
                         </a>

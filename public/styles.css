@@ -290,3 +290,15 @@ a.nostyle:visited {
     color: inherit;
     cursor: auto;
 }
+
+.float-container {
+    display: flex;
+}
+
+.float-child {
+    flex: 1;
+}  
+
+.float-child:first-child {
+    margin-right: 20px;
+} 

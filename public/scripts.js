@@ -11,9 +11,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       event.preventDefault();
       await submitCommentAndRatings();
     });
-  });
-  
-  async function fetchPlayerInfo() {
+});
+
+async function fetchPlayerInfo() {
     try {
       const urlParams = new URLSearchParams(window.location.search);
       const teamName = urlParams.get('team');
@@ -26,12 +26,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   
       // Update player image
       document.getElementById('player-image').src = player.photo;
+
+      // Populate stars with average ratings
+      // setStarRating('skill-stars', player.ratings.skill);
+      // setStarRating('stamina-stars', player.ratings.stamina);
+      // setStarRating('pace-stars', player.ratings.pace);
+      // setStarRating('passing-stars', player.ratings.passing);
+      // setStarRating('shooting-stars', player.ratings.shooting);
+      // setStarRating('defending-stars', player.ratings.defending);
     } catch (error) {
       console.error('Error fetching player information:', error);
     }
-  }
+}
   
-  function addStarListeners() {
+function addStarListeners() {
     const starContainers = document.querySelectorAll('.stars');
     starContainers.forEach(container => {
       container.addEventListener('click', (event) => {
@@ -44,26 +52,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       });
     });
-  }
-  
-  function getStarRating(starContainerId) {
+}
+
+function setStarRating(starContainerId, rating) {
     const stars = document.querySelectorAll(`#${starContainerId} .star`);
-    let rating = 0;
+    stars.forEach(star => {
+      star.classList.toggle('selected', star.getAttribute('data-value') <= rating);
+    });
+}
+  
+function getStarRating(starContainerId) {
+    const stars = document.querySelectorAll(`#${starContainerId} .star`);
+    let rating = undefined;
     stars.forEach(star => {
       if (star.classList.contains('selected')) {
         rating = parseInt(star.getAttribute('data-value'));
       }
     });
     return rating;
-  }
+}
   
-  async function submitCommentAndRatings() {
+async function submitCommentAndRatings() {
     try {
       const comment = document.getElementById('comment').value;
       const skill = getStarRating('skill-stars');
       const stamina = getStarRating('stamina-stars');
       const pace = getStarRating('pace-stars');
-      const physical = getStarRating('physical-stars');
+      const passing = getStarRating('passing-stars');
+      const shooting = getStarRating('shooting-stars');
+      const defending = getStarRating('defending-stars');
   
       const urlParams = new URLSearchParams(window.location.search);
       const teamName = urlParams.get('team');
@@ -72,16 +89,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       await fetch(`/api/teams/${teamName}/players/${playerId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ comment, ratings: { skill, stamina, pace, physical } }),
+        body: JSON.stringify({ comment, ratings: { skill, stamina, pace, passing, shooting, defending } }),
       });
   
       fetchPlayerAndComments();
     } catch (error) {
       console.error('Error submitting comment and ratings:', error);
     }
-  }
+}
   
-  async function fetchPlayerAndComments() {
+async function fetchPlayerAndComments() {
     try {
       const urlParams = new URLSearchParams(window.location.search);
       const teamName = urlParams.get('team');
@@ -91,10 +108,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   
       // Update rating summary
       const ratingSummary = `
-        <p>Skill: ${player.ratings.skill}</p>
-        <p>Stamina: ${player.ratings.stamina}</p>
-        <p>Pace: ${player.ratings.pace}</p>
-        <p>Physical: ${player.ratings.physical}</p>
+        <div class="float-container">
+          <div class="float-child">
+              <div>
+                  <p>Skill: ${player.ratings.skill.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                  <p>Stamina: ${player.ratings.stamina.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                  <p>Pace: ${player.ratings.pace.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+              </div>
+          </div>
+          <div class="float-child">
+              <div>
+                  <p>Passing: ${player.ratings.passing.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                  <p>Shooting: ${player.ratings.shooting.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                  <p>Defending: ${player.ratings.defending.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+              </div>
+          </div>
+        </div>
       `;
       document.getElementById('rating-summary').innerHTML = ratingSummary;
   
@@ -109,5 +138,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
       console.error('Error fetching player comments and ratings:', error);
     }
-  }
-  
+}
