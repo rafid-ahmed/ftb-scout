@@ -85,17 +85,6 @@ ul.player-list li:hover {
     background-color: #e0f7fa;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
-/* General body and headings styles */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
-
-h1, h2 {
-    text-align: center;
-}
 
 #teams-list, #team-details {
     padding: 20px;
@@ -170,21 +159,6 @@ ul.player-list li p {
 
 #back-button:hover {
     background-color: #0056b3;
-}
-
-
-
-
-/* General body and headings styles */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
-
-h1, h2 {
-    text-align: center;
 }
 
 .container {
@@ -291,8 +265,23 @@ a.nostyle:visited {
     cursor: auto;
 }
 
+.float-ov-container {
+    display: flex;
+    font-size: small;
+    margin-left: 10px;
+}
+
+.float-ov-child {
+    flex: 1;
+}  
+
+.float-ov-child:first-child {
+    margin-right: 0px;
+} 
+
 .float-container {
     display: flex;
+    font-size: small;
 }
 
 .float-child {
@@ -302,3 +291,10 @@ a.nostyle:visited {
 .float-child:first-child {
     margin-right: 20px;
 } 
+
+.comment-date {
+    font-size: 0.8em;
+    color: gray;
+    opacity: 0.7;
+    float: middle;
+  }

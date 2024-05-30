@@ -17,47 +17,43 @@ app.use(express.static('public'));
 // Serve static files for player images
 app.use('/photos', express.static(path.join(__dirname, 'public', 'photos')));
 
-// Middleware to set the ngrok-skip-browser-warning header
-// app.use((req, res, next) => {
-//   res.setHeader('ngrok-skip-browser-warning', 'true');
-//   next();
-// });
-
 // MongoDB connection
 mongoose.connect('mongodb://mongo:27017/sports-teams', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const playerSchema = new mongoose.Schema({
-    id: Number,
-    name: String,
-    photo: String,
-    comments: [String],
-    ratings: {
-      skill: { type: Number, default: 0 },
-      stamina: { type: Number, default: 0 },
-      pace: { type: Number, default: 0 },
-      passing: { type: Number, default: 0 },
-      shooting: { type: Number, default: 0 },
-      defending: { type: Number, default: 0 },
-    },
-    totalRatings: {
-      skill: { type: Number, default: 0 },
-      stamina: { type: Number, default: 0 },
-      pace: { type: Number, default: 0 },
-      passing: { type: Number, default: 0 },
-      shooting: { type: Number, default: 0 },
-      defending: { type: Number, default: 0 },
-    },
-    ratingCounts: {
-      skill: { type: Number, default: 0 },
-      stamina: { type: Number, default: 0 },
-      pace: { type: Number, default: 0 },
-      passing: { type: Number, default: 0 },
-      shooting: { type: Number, default: 0 },
-      defending: { type: Number, default: 0 },
-    },
-  });
+  id: Number,
+  name: String,
+  photo: String,
+  comments: [{
+    text: String,
+    date: { type: Date, default: Date.now }
+  }],
+  ratings: {
+    skill: { type: Number, default: 0 },
+    stamina: { type: Number, default: 0 },
+    pace: { type: Number, default: 0 },
+    passing: { type: Number, default: 0 },
+    shooting: { type: Number, default: 0 },
+    defending: { type: Number, default: 0 },
+  },
+  totalRatings: {
+    skill: { type: Number, default: 0 },
+    stamina: { type: Number, default: 0 },
+    pace: { type: Number, default: 0 },
+    passing: { type: Number, default: 0 },
+    shooting: { type: Number, default: 0 },
+    defending: { type: Number, default: 0 },
+  },
+  ratingCounts: {
+    skill: { type: Number, default: 0 },
+    stamina: { type: Number, default: 0 },
+    pace: { type: Number, default: 0 },
+    passing: { type: Number, default: 0 },
+    shooting: { type: Number, default: 0 },
+    defending: { type: Number, default: 0 },
+  },
+});
   
-
 const teamSchema = new mongoose.Schema({
   name: String,
   players: [playerSchema],
@@ -124,55 +120,84 @@ app.get('/api/teams/:teamName/players/:playerId', async (req, res) => {
   }
 });
 
-// API to add a comment and update ratings for a player
+// Inside the POST endpoint for adding comments and ratings
 app.post('/api/teams/:teamName/players/:playerId', async (req, res) => {
-    const { teamName, playerId } = req.params;
-    const { comment, ratings } = req.body;
-  
+  const { teamName, playerId } = req.params;
+  const { comment, ratings } = req.body;
+
+  const team = await Team.findOne({ name: teamName });
+  if (team) {
+    const player = team.players.find(p => p.id === parseInt(playerId));
+    if (player) {
+      if (comment) {
+        player.comments.push({ text: comment, date: new Date() });
+      }
+      if (ratings) {
+        for (let key of ['skill', 'stamina', 'pace', 'passing', 'shooting', 'defending']) {
+          if (ratings[key] !== undefined) {
+            player.totalRatings[key] += ratings[key];
+            player.ratingCounts[key] += 1;
+            player.ratings[key] = player.totalRatings[key] / player.ratingCounts[key];
+          }
+        }
+      }
+      await team.save();
+      res.status(201).json(player);
+    } else {
+      res.status(404).send('Player not found');
+    }
+  } else {
+    res.status(404).send('Team not found');
+  }
+});
+
+// Admin API to delete a comment by comment ID
+app.delete('/api/teams/:teamName/players/:playerId/comments/:commentId', async (req, res) => {
+  const { teamName, playerId, commentId } = req.params;
+
+  try {
     const team = await Team.findOne({ name: teamName });
     if (team) {
       const player = team.players.find(p => p.id === parseInt(playerId));
       if (player) {
-        if (comment) {
-          player.comments.push(comment);
+        const commentIndex = player.comments.findIndex(c => c._id.toString() === commentId);
+        if (commentIndex > -1) {
+          player.comments.splice(commentIndex, 1);
+          await team.save();
+          res.status(200).json({ message: 'Comment deleted successfully' });
+        } else {
+          res.status(404).send('Comment not found');
         }
-        if (ratings) {
-          for (let key of ['skill', 'stamina', 'pace', 'passing', 'shooting', 'defending']) {
-            if (ratings[key] !== undefined) {
-              player.totalRatings[key] += ratings[key];
-              player.ratingCounts[key] += 1;
-              player.ratings[key] = player.totalRatings[key] / player.ratingCounts[key];
-            }
-          }
-        }
-        await team.save();
-        res.status(201).json(player);
       } else {
         res.status(404).send('Player not found');
       }
     } else {
       res.status(404).send('Team not found');
     }
-  });  
-
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    res.status(500).send('Internal server error');
+  }
 });
 
-// app.listen(PORT, async () => {
-//   console.log(`Server is running on port ${PORT}`);
-  
-//   try {
-//     // Start ngrok with authtoken and get the URL
-//     await ngrok.authtoken(NGROK_AUTHTOKEN);
-//     const url = await ngrok.connect({
-//       addr: PORT,
-//       region: 'eu', // specify your region
-//       onStatusChange: status => console.log(`Ngrok status: ${status}`), // logs status changes
-//       onLogEvent: log => console.log(`Ngrok log: ${log}`) // logs Ngrok events
-//     });
-//     console.log(`Ngrok tunnel opened at: ${url}`);
-//   } catch (error) {
-//     console.error('Error starting ngrok:', error);
-//   }
+// app.listen(PORT, () => {
+//   console.log(`Server running at http://localhost:${PORT}`);
 // });
+
+app.listen(PORT, async () => {
+  console.log(`Server is running on port ${PORT}`);
+  
+  try {
+    // Start ngrok with authtoken and get the URL
+    await ngrok.authtoken(NGROK_AUTHTOKEN);
+    const url = await ngrok.connect({
+      addr: PORT,
+      region: 'eu', // specify your region
+      onStatusChange: status => console.log(`Ngrok status: ${status}`), // logs status changes
+      onLogEvent: log => console.log(`Ngrok log: ${log}`) // logs Ngrok events
+    });
+    console.log(`Ngrok tunnel opened at: ${url}`);
+  } catch (error) {
+    console.error('Error starting ngrok:', error);
+  }
+});

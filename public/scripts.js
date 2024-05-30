@@ -99,43 +99,71 @@ async function submitCommentAndRatings() {
 }
   
 async function fetchPlayerAndComments() {
-    try {
+  try {
       const urlParams = new URLSearchParams(window.location.search);
       const teamName = urlParams.get('team');
       const playerId = urlParams.get('player');
+      const isAdmin = urlParams.get('admin') === 'true';
       const response = await fetch(`/api/teams/${teamName}/players/${playerId}`);
       const player = await response.json();
-  
+
       // Update rating summary
       const ratingSummary = `
-        <div class="float-container">
-          <div class="float-child">
-              <div>
-                  <p>Skill: ${player.ratings.skill.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
-                  <p>Stamina: ${player.ratings.stamina.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
-                  <p>Pace: ${player.ratings.pace.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+          <div class="float-container">
+              <div class="float-child">
+                  <div>
+                      <p>Skill: ${player.ratings.skill.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                      <p>Stamina: ${player.ratings.stamina.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                      <p>Pace: ${player.ratings.pace.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                  </div>
+              </div>
+              <div class="float-child">
+                  <div>
+                      <p>Passing: ${player.ratings.passing.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                      <p>Shooting: ${player.ratings.shooting.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                      <p>Defending: ${player.ratings.defending.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
+                  </div>
               </div>
           </div>
-          <div class="float-child">
-              <div>
-                  <p>Passing: ${player.ratings.passing.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
-                  <p>Shooting: ${player.ratings.shooting.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
-                  <p>Defending: ${player.ratings.defending.toFixed(1)}<span style="color: #ffd700;">&#9733;</span></p>
-              </div>
-          </div>
-        </div>
       `;
       document.getElementById('rating-summary').innerHTML = ratingSummary;
-  
+
       // Update comments
       const commentsList = document.getElementById('comments');
       commentsList.innerHTML = '';
       player.comments.forEach(comment => {
-        const li = document.createElement('li');
-        li.textContent = comment;
-        commentsList.appendChild(li);
+          const li = document.createElement('li');
+          li.innerHTML = `
+              ${comment.text}
+              <br><span class="comment-date">${new Date(comment.date).toLocaleString()}</span>
+              <br>${isAdmin ? `<button class="delete-comment-btn" data-comment-id="${comment._id}">Delete</button>` : ''}
+          `;
+          commentsList.prepend(li);
       });
-    } catch (error) {
+
+      // Add event listeners to delete buttons
+      if (isAdmin) {
+          document.querySelectorAll('.delete-comment-btn').forEach(button => {
+              button.addEventListener('click', async (event) => {
+                  const commentId = event.target.getAttribute('data-comment-id');
+                  await deleteComment(teamName, playerId, commentId);
+                  await fetchPlayerAndComments(); // Refresh the comments list
+              });
+          });
+      }
+
+  } catch (error) {
       console.error('Error fetching player comments and ratings:', error);
-    }
+  }
+}
+
+async function deleteComment(teamName, playerId, commentId) {
+  try {
+      await fetch(`/api/teams/${teamName}/players/${playerId}/comments/${commentId}`, {
+          method: 'DELETE'
+      });
+      console.log('Comment deleted successfully');
+  } catch (error) {
+      console.error('Error deleting comment:', error);
+  }
 }
